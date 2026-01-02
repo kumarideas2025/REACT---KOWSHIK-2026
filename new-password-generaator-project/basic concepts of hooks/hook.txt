@@ -1,0 +1,230 @@
+ 
+
+# What is a Hook in React?
+
+Hooks are special functions, that let you use React features (state, lifecycle, context, etc.) *inside functional components*.
+
+Before Hooks, these features were only available in **class components**.
+
+
+# 1️⃣ `useState` — Store & Manage State
+
+# What is “state”?
+
+State is **data that can change** and affects the UI.
+
+# Why use `useState`?
+
+To:
+
+* Store values (count, color, text, form input)
+* Re-render UI when the value changes
+
+# Example
+
+```jsx
+const [count, setCount] = useState(0);
+```
+
+* `count` → current value
+* `setCount` → function to update value
+* `0` → initial value
+
+```jsx
+<button onClick={() => setCount(count + 1)}>+</button>
+```
+
+ When state changes → **component re-renders**
+
+---
+
+
+
+
+
+
+# 2️⃣ `useEffect` — Lifecycle & Side Effects
+
+###  What is a side effect?
+
+Anything **outside normal rendering**, like:
+
+* API calls
+* Timers
+* Event listeners
+* DOM updates
+
+###  Why use `useEffect`?
+
+To run code:
+
+* When component mounts
+* When state/props change
+* When component unmounts
+
+###  Example
+
+```jsx
+useEffect(() => {
+  console.log("Component mounted");
+}, []);
+```
+
+* `[]` → run only once (on mount)
+
+```jsx
+useEffect(() => {
+  console.log("Count changed");
+}, [count]);
+```
+
+ Runs when `count` changes
+
+---
+
+
+
+
+
+
+# 3️⃣ `useContext` — Global Data (No Prop Drilling)
+
+###  What is prop drilling?
+
+Passing props **component → component → component** unnecessarily.
+
+###  Why use `useContext`?
+
+To share:
+
+* User info
+* Theme (dark/light)
+* Language
+* Auth data
+
+###  Example
+
+```jsx
+const UserContext = React.createContext();
+
+<UserContext.Provider value="Kowshik">
+  <App />
+</UserContext.Provider>
+```
+
+```jsx
+const user = useContext(UserContext);
+```
+
+ Any component can access data **without props**
+
+---
+
+
+
+
+
+# 4️⃣ `useRef` — DOM & Mutable Values
+
+###  Why use `useRef`?
+
+To:
+
+* Access DOM elements directly
+* Store values that **do NOT cause re-render**
+
+###  Example (DOM)
+
+```jsx
+const inputRef = useRef();
+
+<input ref={inputRef} />
+<button onClick={() => inputRef.current.focus()}>
+  Focus
+</button>
+```
+
+###  Example (value without re-render)
+
+```jsx
+const countRef = useRef(0);
+countRef.current++;
+```
+
+ UI does NOT re-render
+
+---
+
+
+
+
+
+# 5️⃣ `useReducer` — Complex State Logic
+
+###  Why not `useState`?
+
+When:
+
+* State logic is complex
+* Multiple related states
+* Redux-like logic needed
+
+###  Example
+
+```jsx
+const reducer = (state, action) => {
+  if (action.type === "INC") return state + 1;
+  if (action.type === "DEC") return state - 1;
+};
+
+const [count, dispatch] = useReducer(reducer, 0);
+```
+
+```jsx
+<button onClick={() => dispatch({ type: "INC" })}>+</button>
+```
+
+ Cleaner & predictable state updates
+
+---
+
+
+
+
+
+##  Summary Table
+
+| Hook         | When to use it               |
+| ------------ | ---------------------------- |
+| `useState`   | Simple changing data         |
+| `useEffect`  | API, lifecycle, side effects |
+| `useContext` | Global/shared data           |
+| `useRef`     | DOM access / no re-render    |
+| `useReducer` | Complex state logic          |
+
+---
+
+
+## ⭐ Golden Rule
+
+> **If UI depends on data → useState / useReducer**
+> **If code runs because of something → useEffect**
+
+---
+
+ // | Hook         | Purpose / What it does                    |
+// | ------------ | ----------------------------------------- |
+// | `useState`   | Stores and manages component state        |
+// | `useEffect`  | Handles lifecycle events and side effects |
+// | `useContext` | Shares global data without prop drilling  |
+// | `useRef`     | Accesses DOM elements or mutable values   |
+// | `useReducer` | Manages complex state logic               |
+
+
+
+
+
+
+1️.Mount → component shows first time
+2️.Update → state/props change
+3️.Unmount → component removed from screen

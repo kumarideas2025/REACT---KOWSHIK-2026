@@ -1,0 +1,157 @@
+
+## ✅ `useCallback` —-----
+
+### 🔹 What is `useCallback`?
+
+`useCallback` is a React Hook that **memoizes a function**, so React **does not recreate the function on every render**.
+
+👉 It remembers the **same function reference** until dependencies change.
+
+---
+
+### 🔹 Why do we need `useCallback`?
+
+* React re-renders → normal functions are recreated
+* New function reference → child components think props changed
+* This causes **unnecessary re-renders**
+
+👉 `useCallback` **prevents unnecessary child re-renders**.
+
+---
+
+### 🔹 Core Idea (Very Important)
+
+* Functions are **objects in memory**
+* Variables store a **reference (address)** to that function
+* React compares props using **reference equality (`===`)**
+
+---
+
+### 🔹 Without `useCallback`
+
+* New function created on every render
+* New memory address each time
+* Child component re-renders even if logic is same
+
+❌ Inefficient
+
+---
+
+### 🔹 With `useCallback`
+
+* Function created once
+* Stored (memoized) in memory
+* Same reference reused on every render
+* Child component does NOT re-render unnecessarily
+
+✅ Optimized
+
+---
+
+### 🔹 Syntax
+
+```js
+const memoizedFn = useCallback(() => {
+  // logic
+}, [dependencies]);
+```
+
+* `[]` → function never changes
+* `[count]` → function recreated only when `count` changes
+
+---
+
+### 🔹 What “dependencies change” means
+
+A dependency changes **ONLY when its setter is called**:
+
+```js
+setCount(count + 1);
+setCount(5);
+```
+
+If dependency value changes:
+👉 React recreates the function
+If not:
+👉 React reuses the same function
+
+---
+
+### 🔹 Why React recreates the function
+
+Because of **JavaScript closures**:
+
+* Functions capture values at creation time
+* If a function uses `count`, it must be recreated to capture the new value
+
+---
+
+### 🔹 Important Rule (Very Important)
+
+❌ Never omit dependencies
+
+```js
+// ❌ Bug
+useCallback(() => {
+  console.log(count);
+}, []);
+```
+
+```js
+// ✅ Correct
+useCallback(() => {
+  console.log(count);
+}, [count]);
+```
+
+---
+
+### 🔹 When should you use `useCallback`?
+
+✅ Passing functions to child components
+✅ Using `React.memo`
+✅ Performance optimization
+❌ Not needed for simple apps
+
+---
+
+### 🔹 Mental Model (Easy to remember)
+
+> **Dependencies decide when React should forget and recreate the function.**
+
+---
+
+## 🧾 Final Comment-Ready Summary (Best for your code)
+
+```js
+// useCallback memoizes a function and keeps the same reference in memory
+// React recreates the function only when dependency values change
+```
+
+
+
+
+
+
+
+----------------------------without callback-------------------------
+On every render:
+A new function object is created
+A new memory address
+
+handleClick points to a different place
+Render 1 → handleClick → 0xAAA
+Render 2 → handleClick → 0xBBB
+Render 3 → handleClick → 0xCCC
+
+
+
+-------------------------------with callBack------------------
+React behavior:
+Function is created once
+Stored in memory
+
+Reused on every render
+Render 1 → handleClick → 0xAAA
+Render 2 → handleClick → 0xAAA
+Render 3 → handleClick → 0xAAA
